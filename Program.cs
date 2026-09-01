@@ -1,6 +1,9 @@
 using ECommerceApi.Data;
 using Microsoft.EntityFrameworkCore;
 using ECommerceApi.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace ECommerceApi
 {
@@ -19,7 +22,27 @@ namespace ECommerceApi
 
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<IProductService, ProductService>();
-            builder.Services.AddScoped<IUserService, UserService>();    
+            builder.Services.AddScoped<IUserService, UserService>();
+
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+               {
+                   options.TokenValidationParameters = new TokenValidationParameters
+                   {
+                       ValidateIssuer = true,
+                       ValidateAudience = true,
+                       ValidateLifetime = true,
+                       ValidateIssuerSigningKey = true,
+
+                       ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                       ValidAudience = builder.Configuration["Jwt:Audience"],
+
+                       IssuerSigningKey = new SymmetricSecurityKey(
+                         Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)
+                         )
+                   };
+               }
+            );
 
 
             var app = builder.Build();
@@ -29,7 +52,9 @@ namespace ECommerceApi
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
+
 
 
             app.MapControllers();

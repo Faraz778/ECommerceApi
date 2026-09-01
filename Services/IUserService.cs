@@ -5,7 +5,7 @@ namespace ECommerceApi.Services
     public interface IUserService
     {
          Task<bool> Register(RegisterUserDto registerUserDto);
-        Task<bool> Login(LoginUserDto loginUserDto);
+         Task<string?> Login(LoginUserDto loginUserDto);
 
     }
 }

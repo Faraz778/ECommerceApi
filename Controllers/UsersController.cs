@@ -28,5 +28,23 @@ namespace ECommerceApi.Controllers
 
         }
 
+        [HttpPost("login")]
+
+        public async Task<IActionResult> Login(LoginUserDto loginUserDto) { 
+        
+            var result = await _userService.Login(loginUserDto);
+            if (result == null)
+            {
+              return Unauthorized("invalid email or password");
+            }
+            return Ok(new
+            {
+                message = "login successful",
+                token = result
+            });
+        }
+
+
+
     }
 }

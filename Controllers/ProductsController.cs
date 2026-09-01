@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ECommerceApi.Services;
 using ECommerceApi.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ECommerceApi.Controllers
 {
@@ -16,6 +17,7 @@ namespace ECommerceApi.Controllers
             _productService = productService;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllProducts()
         {
